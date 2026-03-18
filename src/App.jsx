@@ -2,6 +2,7 @@ import { useState } from "react";
 import Navbar from "./components/Navbar";
 import PostList from "./components/PostList";
 import UserCard from "./components/UserCard";
+import AddPostForm from "./components/AddPostForm";
 import "./App.css";
 
 const POSTS = [
@@ -34,12 +35,31 @@ const USERS = [
 ];
 
 function App() {
-  const [count, setCount] = useState(0);
+  const [posts, setPosts] = useState(INITIAL_POSTS);
+  const [favorites, setFavorites] = useState([]);
+
+  // Toggle Favorite
+  function handleToggleFavorite(postId) {
+    setFavorites((prev) =>
+      prev.includes(postId)
+        ? prev.filter((id) => id !== postId)
+        : [...prev, postId],
+    );
+  }
+
+  // Add New Post
+  function handleAddPost({ title, body }) {
+    const newPost = {
+      id: Date.now(),
+      title,
+      body,
+    };
+    setPosts((prev) => [newPost, ...prev]);
+  }
 
   return (
     <div>
-      <Navbar />
-
+      <Navbar favoriteCount={favorites.length} />
       <div
         style={{
           maxWidth: "900px",
@@ -50,14 +70,24 @@ function App() {
           gap: "2rem",
         }}
       >
-        {/* โพสต์ */}
         <div>
-          <PostList posts={POSTS} />
+          <AddPostForm onAddPost={handleAddPost} />
+          <PostList
+            posts={posts}
+            favorites={favorites}
+            onToggleFavorite={handleToggleFavorite}
+          />
         </div>
-
-        {/* สมาชิก */}
         <div>
-          <h2>สมาชิก</h2>
+          <h2
+            style={{
+              color: "#2d3748",
+              borderBottom: "2px solid #1e40af",
+              paddingBottom: "0.5rem",
+            }}
+          >
+            สมาชิก
+          </h2>
           {USERS.map((user) => (
             <UserCard key={user.id} name={user.name} email={user.email} />
           ))}
