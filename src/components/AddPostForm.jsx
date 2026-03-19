@@ -6,10 +6,10 @@ function AddPostForm({ onAddPost }) {
 
   function handleSubmit(e) {
     e.preventDefault();
-    if (!title.trim() || !body.trim()) return;
+    if (!title.trim() || !body.trim()) return; // ป้องกันส่งว่าง
 
     onAddPost({ title, body });
-    setTitle("");
+    setTitle(""); // เคลียร์ form
     setBody("");
   }
 
@@ -27,6 +27,7 @@ function AddPostForm({ onAddPost }) {
       <h3 style={{ margin: "0 0 0.75rem", color: "#2d3748" }}>
         เพิ่มโพสต์ใหม่
       </h3>
+
       <input
         type="text"
         placeholder="หัวข้อโพสต์"
@@ -38,9 +39,11 @@ function AddPostForm({ onAddPost }) {
           marginBottom: "0.5rem",
           border: "1px solid #cbd5e0",
           borderRadius: "4px",
+          fontSize: "1rem",
           boxSizing: "border-box",
         }}
       />
+
       <textarea
         placeholder="เนื้อหาโพสต์"
         value={body}
@@ -52,10 +55,12 @@ function AddPostForm({ onAddPost }) {
           marginBottom: "0.75rem",
           border: "1px solid #cbd5e0",
           borderRadius: "4px",
+          fontSize: "1rem",
           resize: "vertical",
           boxSizing: "border-box",
         }}
       />
+
       <button
         type="submit"
         style={{
@@ -65,6 +70,7 @@ function AddPostForm({ onAddPost }) {
           padding: "0.5rem 1.5rem",
           borderRadius: "6px",
           cursor: "pointer",
+          fontSize: "1rem",
         }}
       >
         โพสต์

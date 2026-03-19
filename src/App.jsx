@@ -1,11 +1,10 @@
 import { useState } from "react";
 import Navbar from "./components/Navbar";
 import PostList from "./components/PostList";
-import UserCard from "./components/UserCard";
+import UserList from "./components/UserList";
 import AddPostForm from "./components/AddPostForm";
-import "./App.css";
 
-const POSTS = [
+const INITIAL_POSTS = [
   {
     id: 1,
     title: "React คืออะไร?",
@@ -29,16 +28,21 @@ const POSTS = [
 ];
 
 const USERS = [
-  { id: 1, name: "สมชาย ใจดี", email: "somchai@dev.com" },
-  { id: 2, name: "สมหญิง รักเรียน", email: "somying@dev.com" },
-  { id: 3, name: "วิชาญ โค้ดเก่ง", email: "wichan@dev.com" },
+  { id: 1, name: "ธนภัทธ์ พอควร", email: "tanakhuan@dev.com" },
+  { id: 2, name: "ภัทธน ควรพอ", email: "phatphor@dev.com" },
+  { id: 3, name: "ควรพอ พอเลย", email: "khuanphor@dev.com" },
 ];
 
 function App() {
-  const [posts, setPosts] = useState(INITIAL_POSTS);
   const [favorites, setFavorites] = useState([]);
 
-  // Toggle Favorite
+  // ฟังก์ชันจัดการเพิ่มโพสต์ (ในสัปดาห์นี้จะยังไม่เชื่อมกับ API ของ PostList
+  // ให้เขียนเตรียมไว้ก่อนตามคู่มือครับ)
+  function handleAddPost({ title, body }) {
+    console.log("Add Post:", { title, body });
+  }
+
+  // ฟังก์ชัน Toggle ถูกใจ
   function handleToggleFavorite(postId) {
     setFavorites((prev) =>
       prev.includes(postId)
@@ -47,19 +51,11 @@ function App() {
     );
   }
 
-  // Add New Post
-  function handleAddPost({ title, body }) {
-    const newPost = {
-      id: Date.now(),
-      title,
-      body,
-    };
-    setPosts((prev) => [newPost, ...prev]);
-  }
-
   return (
     <div>
+      {/* ส่งจำนวน favorites ไปแสดงที่ Navbar */}
       <Navbar favoriteCount={favorites.length} />
+
       <div
         style={{
           maxWidth: "900px",
@@ -70,27 +66,19 @@ function App() {
           gap: "2rem",
         }}
       >
+        {/* คอลัมน์ซ้าย: ฟอร์มเพิ่มโพสต์ และรายการโพสต์จาก API */}
         <div>
           <AddPostForm onAddPost={handleAddPost} />
+
           <PostList
-            posts={posts}
             favorites={favorites}
             onToggleFavorite={handleToggleFavorite}
           />
         </div>
+
+        {/* คอลัมน์ขวา: รายชื่อสมาชิกจาก API */}
         <div>
-          <h2
-            style={{
-              color: "#2d3748",
-              borderBottom: "2px solid #1e40af",
-              paddingBottom: "0.5rem",
-            }}
-          >
-            สมาชิก
-          </h2>
-          {USERS.map((user) => (
-            <UserCard key={user.id} name={user.name} email={user.email} />
-          ))}
+          <UserList />
         </div>
       </div>
     </div>
