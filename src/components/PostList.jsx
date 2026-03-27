@@ -1,42 +1,35 @@
 import { useState, useEffect } from "react";
 import PostCard from "./PostCard";
 import LoadingSpinner from "./LoadingSpinner";
+import { useFavorites } from "../context/FavoritesContext";
 
-function PostList({ favorites, onToggleFavorite }) {
+function PostList() {
+  const { favorites } = useFavorites();
   const [posts, setPosts] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
   const [search, setSearch] = useState("");
 
   useEffect(() => {
     async function fetchPosts() {
       try {
         setLoading(true);
-        setError(null);
         const res = await fetch("https://jsonplaceholder.typicode.com/posts");
-        if (!res.ok) throw new Error("ดึงข้อมูลไม่สำเร็จ");
         const data = await res.json();
-        setPosts(data.slice(0, 20)); // ดึงมาแค่ 20 อันแรก
+        setPosts(data.slice(0, 20));
       } catch (err) {
-        setError(err.message);
+        console.error("ดึงข้อมูลไม่สำเร็จ:", err);
       } finally {
         setLoading(false);
       }
     }
     fetchPosts();
-  }, []); // ทำงานครั้งเดียวตอนโหลดหน้าเว็บ
+  }, []); // ทำงานครั้งเดียวตอนโหลด Component
 
   const filtered = posts.filter((post) =>
     post.title.toLowerCase().includes(search.toLowerCase()),
   );
 
-  if (loading) return <LoadingSpinner />; // ถ้ากำลังโหลด ให้โชว์ตัวหมุน
-  if (error)
-    return (
-      <div style={{ color: "red", padding: "1rem" }}>
-        เกิดข้อผิดพลาด: {error}
-      </div>
-    );
+  if (loading) return <LoadingSpinner />;
 
   return (
     <div>
@@ -62,14 +55,13 @@ function PostList({ favorites, onToggleFavorite }) {
         }}
       />
 
-      {filtered.map((post) => (
-        <PostCard
-          key={post.id}
-          post={post}
-          isFavorite={favorites.includes(post.id)}
-          onToggleFavorite={() => onToggleFavorite(post.id)}
-        />
-      ))}
+      {filtered.length > 0 ? (
+        filtered.map((post) => <PostCard key={post.id} post={post} />)
+      ) : (
+        <p style={{ textAlign: "center", color: "#718096" }}>
+          ไม่พบโพสต์ที่ค้นหา
+        </p>
+      )}
     </div>
   );
 }
